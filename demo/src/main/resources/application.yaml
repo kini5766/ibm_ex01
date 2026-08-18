@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: demo
+
+
+
+jwt:
+  redirect-location: http://localhost:5173/cookie
+  secret: mj5CYN8brAR78+SHxIl1CkW7AtTuxEDnBAudLZZFlWo=
+  access-token-expires-in: 1800000      # 30분
+  refresh-token-expires-in: 604800000   # 7일
