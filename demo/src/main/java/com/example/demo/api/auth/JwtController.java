@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt.controller;
+package com.example.demo.api.auth;
 
 import com.example.demo.security.handler.SocialSuccessHandler;
 import com.example.demo.security.jwt.dto.JWTResponseDTO;

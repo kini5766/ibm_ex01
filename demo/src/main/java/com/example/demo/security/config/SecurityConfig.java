@@ -6,7 +6,7 @@ import com.example.demo.security.handler.JwtLogoutSuccessHandler;
 import com.example.demo.security.handler.LoginFailureHandler;
 import com.example.demo.security.handler.LoginSuccessHandler;
 import com.example.demo.security.handler.RefreshTokenLogoutHandler;
-import com.example.demo.security.jwt.controller.JwtController;
+import com.example.demo.api.auth.JwtController;
 import com.example.demo.security.oauth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

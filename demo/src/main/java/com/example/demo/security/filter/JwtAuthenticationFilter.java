@@ -1,6 +1,6 @@
 package com.example.demo.security.filter;
 
-import com.example.demo.security.jwt.controller.JwtController;
+import com.example.demo.api.auth.JwtController;
 import com.example.demo.security.jwt.entity.JwtClaims;
 import com.example.demo.security.jwt.util.JwtTokenProvider;
 import com.example.demo.security.jwt.util.JwtTokenResolver;
