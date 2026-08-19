@@ -1,5 +1,6 @@
 package com.example.demo.security.config;
 
+import com.example.demo.api.user.UserController;
 import com.example.demo.security.filter.JwtAuthenticationFilter;
 import com.example.demo.security.filter.LoginFilter;
 import com.example.demo.security.handler.JwtLogoutSuccessHandler;
@@ -11,6 +12,7 @@ import com.example.demo.security.oauth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -87,6 +89,11 @@ public class SecurityConfig {
                                 JwtController.EXCHANGE_URL,
                                 JwtController.REFRESH_URL,
                                 JwtController.LOGOUT_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, UserController.USER_URL).permitAll()
+                        .requestMatchers(HttpMethod.GET, UserController.EXIST_URL + "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, UserController.USER_URL).permitAll()
+                        .requestMatchers(HttpMethod.PUT, UserController.USER_URL).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, UserController.USER_URL).permitAll()
                         // TODO : api 추가할 때 작업
                         .anyRequest().authenticated()
                 )

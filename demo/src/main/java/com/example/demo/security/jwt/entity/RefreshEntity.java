@@ -43,11 +43,6 @@ public class RefreshEntity {
     @Column(nullable = false)
     private boolean revoked;
 
-    @PrePersist
-    public void prePersist() {
-        this.revoked = false;
-    }
-
     public static String hash(String rawToken) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
