@@ -58,7 +58,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(dto));
     }
 
-
     // 회원 탈퇴
     // http://localhost:8081/api/user
     @DeleteMapping(value = USER_URL)

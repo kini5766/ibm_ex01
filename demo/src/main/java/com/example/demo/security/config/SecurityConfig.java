@@ -91,11 +91,8 @@ public class SecurityConfig {
                                 JwtController.LOGOUT_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, UserController.USER_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, UserController.EXIST_URL + "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, UserController.USER_URL).permitAll()
-                        .requestMatchers(HttpMethod.PUT, UserController.USER_URL).permitAll()
-                        .requestMatchers(HttpMethod.DELETE, UserController.USER_URL).permitAll()
-                        // TODO : api 추가할 때 작업
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(userInfo -> userInfo

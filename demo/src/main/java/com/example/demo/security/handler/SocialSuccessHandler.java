@@ -3,6 +3,7 @@ package com.example.demo.security.handler;
 import com.example.demo.domain.user.entity.UserRoleType;
 import com.example.demo.security.jwt.dto.JWTResponseDTO;
 import com.example.demo.security.jwt.service.JwtService;
+import com.example.demo.security.jwt.util.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,16 +24,11 @@ import java.util.List;
 public class SocialSuccessHandler implements AuthenticationSuccessHandler {
     public static final String REDIRECT_LOCATION = "http://localhost:5173/cookie";
 
-    @Value("${access-token-expires-in}")
-    private long accessTokenExpiresIn;
-
-    @Value("${refresh-token-expires-in}")
-    private long refreshTokenExpiresIn;
-
     public static final String COOKIE_NAME_ACCESS_TOKEN = "access_token";
     public static final String COOKIE_NAME_REFRESH_TOKEN = "refresh_token";
 
     private final JwtService jwtService;
+    private final JwtProperties jwtProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -45,14 +41,14 @@ public class SocialSuccessHandler implements AuthenticationSuccessHandler {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(Duration.ofMillis(accessTokenExpiresIn))
+                .maxAge(Duration.ofMillis(jwtProperties.accessTokenExpiration()))
                 .build();
 
         ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME_REFRESH_TOKEN, tokens.refreshToken())
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(Duration.ofMillis(refreshTokenExpiresIn))
+                .maxAge(Duration.ofMillis(jwtProperties.refreshTokenExpiration()))
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());

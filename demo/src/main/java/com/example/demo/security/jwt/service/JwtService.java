@@ -3,6 +3,7 @@ package com.example.demo.security.jwt.service;
 import com.example.demo.security.jwt.dto.RefreshRequestDTO;
 import com.example.demo.security.jwt.dto.JWTResponseDTO;
 import com.example.demo.security.jwt.entity.RefreshEntity;
+import com.example.demo.security.jwt.util.JwtProperties;
 import com.example.demo.security.jwt.util.JwtTokenProvider;
 import com.example.demo.security.jwt.repository.RefreshTokenRepository;
 import com.nimbusds.oauth2.sdk.TokenResponse;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtService {
 
+    private final JwtProperties jwtProperties;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshEntityRepository;
 
@@ -61,7 +63,7 @@ public class JwtService {
     private void clearCookie(HttpServletResponse response, String name) {
         ResponseCookie cookie = ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
@@ -154,7 +156,7 @@ public class JwtService {
         RefreshEntity entity = RefreshEntity.builder()
                 .refreshHash(RefreshEntity.hash(rawRefreshToken))
                 .username(username)
-                .expiryDate(LocalDateTime.now().plusSeconds(jwtTokenProvider.getRefreshTokenExpiresIn()))
+                .expiryDate(LocalDateTime.now().plusSeconds(jwtProperties.refreshTokenExpiration()))
                 .build();
 
         refreshEntityRepository.save(entity);

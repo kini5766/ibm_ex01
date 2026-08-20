@@ -7,10 +7,4 @@ public record JwtClaims(
         List<String> roles,
         TokenType type
 ) {
-    public boolean isAccessToken() {
-        return type == TokenType.ACCESS;
-    }
-    public boolean isRefreshToken() {
-        return type == TokenType.REFRESH;
-    }
 }

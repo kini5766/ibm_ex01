@@ -1,26 +1,42 @@
-스트링부트
+*프론트 엔드
 리액트 (+vite)
 
-MSA
-CI/CD
+* 백엔드
+스트링부트
 
-PostgreSQL
+* 아키텍처
+MSA
+
+* DevOps / 배포
+CI/CD
+AWS 배포
 현상관리(github)
+
+* 데이터 베이스 / 저장소
+PostgreSQL
 레디스
 몽고DB
-AWS 배포
+
+* AI
 IBM wastonx.ai
 
+* 인증 / 사용자 관리
 JWT
 소셜로그인
+
+* 기능
 채팅
 
+-- 
 
+* 메모
 DrawDB (ERD 관리 공유)
 Saga 패턴 (MSA 원자성 보장)
 API Gateway/Load Balancer ?
 
-주의 할점
+--
+
+** 주의 할점
 
 사용자 입력이 직접 들어가는 쿼리 주의
 JPA
@@ -35,9 +51,8 @@ Race Condition
 API 입력값 검증 부족
 IDOR (인증/인가 확인)
 api에 이상한 값 들어가는 경우의 수도 고려
-서비스 간 통신도 인증, 권한, 입력값, timeout, retry, idempotency 고려
-특히 retry+결제/주문
- (Idempotency 멱등성, DB 제약조건 추가)
+서비스 간 통신도 인증, 권한, 입력값, timeout, Retry 중복요청 고려
+(Idempotency 멱등성, DB 제약조건 추가)
 
 로그에 민감정보 남기지 않기
 에러 메시지도 조심

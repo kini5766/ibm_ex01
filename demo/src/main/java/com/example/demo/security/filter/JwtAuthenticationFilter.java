@@ -2,6 +2,7 @@ package com.example.demo.security.filter;
 
 import com.example.demo.api.auth.JwtController;
 import com.example.demo.security.jwt.entity.JwtClaims;
+import com.example.demo.security.jwt.entity.TokenType;
 import com.example.demo.security.jwt.util.JwtTokenProvider;
 import com.example.demo.security.jwt.util.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
@@ -51,10 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = jwtTokenResolver.resolveBearerToken(request);
 
-            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-                JwtClaims claims = jwtTokenProvider.parseClaims(token);
-
-                if (claims.isAccessToken()) {
+            if (StringUtils.hasText(token)) {
+                JwtClaims claims = jwtTokenProvider.parseClaimsAccess(token);
+                if (claims.type() == TokenType.ACCESS) {
                     setAuthentication(claims, request);
                 }
             }
