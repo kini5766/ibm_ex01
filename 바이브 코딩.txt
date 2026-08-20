@@ -1,0 +1,69 @@
+스트링부트
+리액트 (+vite)
+
+MSA
+CI/CD
+
+PostgreSQL
+현상관리(github)
+레디스
+몽고DB
+AWS 배포
+IBM wastonx.ai
+
+JWT
+소셜로그인
+채팅
+
+
+DrawDB (ERD 관리 공유)
+Saga 패턴 (MSA 원자성 보장)
+API Gateway/Load Balancer ?
+
+주의 할점
+
+사용자 입력이 직접 들어가는 쿼리 주의
+JPA
+PreparedStatement
+Parameterized Query
+
+동시성 문제
+Race Condition
+
+여러 서버간 트랜잭션 경계 문제 (원자성)
+
+API 입력값 검증 부족
+IDOR (인증/인가 확인)
+api에 이상한 값 들어가는 경우의 수도 고려
+서비스 간 통신도 인증, 권한, 입력값, timeout, retry, idempotency 고려
+특히 retry+결제/주문
+ (Idempotency 멱등성, DB 제약조건 추가)
+
+로그에 민감정보 남기지 않기
+에러 메시지도 조심
+
+LLM/Git 공유하면 안 될 것
+❌ 비밀번호
+❌ JWT secret
+❌ DB password
+❌ API key
+❌ AWS credential
+❌ Redis credential
+❌ 암호화 키
+
+AI가 만든 의존성 버전
+AI가 현재 프로젝트와 맞지 않는 라이브러리 버전을 사용할 수 있다.
+(최신 버전에서 아직 지원 안하는 의존성 추가 가능)
+
+테스트 시 체크리스트
+정상 요청
+잘못된 입력
+인증 없는 요청
+권한 없는 요청
+동시에 여러 요청
+중복 요청
+DB 오류
+외부 API timeout
+Redis 장애
+메시지 중복
+재시도
