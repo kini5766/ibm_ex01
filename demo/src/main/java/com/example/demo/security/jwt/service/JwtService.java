@@ -3,6 +3,7 @@ package com.example.demo.security.jwt.service;
 import com.example.demo.security.jwt.dto.RefreshRequestDTO;
 import com.example.demo.security.jwt.dto.JWTResponseDTO;
 import com.example.demo.security.jwt.entity.RefreshEntity;
+import com.example.demo.security.jwt.entity.TokenType;
 import com.example.demo.security.jwt.util.JwtProperties;
 import com.example.demo.security.jwt.util.JwtTokenProvider;
 import com.example.demo.security.jwt.repository.RefreshTokenRepository;
@@ -98,12 +99,11 @@ public class JwtService {
         String rawRefreshToken = request.refreshToken();
 
         // 1. JWT 자체 검증 (서명, 만료, type=REFRESH)
-        if (!jwtTokenProvider.validateToken(rawRefreshToken) ||
-                !jwtTokenProvider.isRefreshToken(rawRefreshToken)) {
+        if (!jwtTokenProvider.validateToken(rawRefreshToken, TokenType.REFRESH)) {
             throw new IllegalArgumentException("Invalid refresh token");
         }
 
-        var claims = jwtTokenProvider.parseClaims(rawRefreshToken);
+        var claims = jwtTokenProvider.parseClaims(rawRefreshToken, TokenType.REFRESH);
         String username = claims.sub();
         List<String> roles = claims.roles();
 

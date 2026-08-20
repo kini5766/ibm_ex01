@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.entity;
 
+import com.example.demo.domain.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,12 +24,11 @@ public class UserSocialAccountEntity extends BaseTimeEntity {
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provider_type", nullable = false)
+    @Column(nullable = false)
     private SocialProviderType providerType;
 
-    @Column(name = "provider_id", nullable = false)
+    @Column(nullable = false)
     private String providerId;
 
-    @Column(name = "email")
     private String email;
 }

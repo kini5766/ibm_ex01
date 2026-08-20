@@ -27,17 +27,17 @@ public class RefreshEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", nullable = false)
+    @Column(nullable = false)
     private String username;
 
-    @Column(name = "refresh_hash", nullable = false, unique = true, length = 64)
+    @Column(nullable = false, unique = true, length = 64)
     private String refreshHash;
 
     @CreatedDate
-    @Column(name = "created_date", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "expiry_date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime expiryDate;
 
     @Column(nullable = false)

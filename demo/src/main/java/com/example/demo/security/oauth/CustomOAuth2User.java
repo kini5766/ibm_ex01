@@ -13,12 +13,12 @@ public class CustomOAuth2User implements OAuth2User {
 
     private final Map<String, Object> attributes;
     private final List<GrantedAuthority> authorities;
-    private final String username;
+    private final String email;
 
     public CustomOAuth2User(UserEntity entity, Map<String, Object> attributes) {
         this.attributes = Map.copyOf(attributes);
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + entity.getRole().name()));
-        this.username = entity.getUsername();
+        this.email = entity.getEmail();
     }
 
     @Override
@@ -33,6 +33,6 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return username;
+        return email;
     }
 }

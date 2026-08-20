@@ -20,34 +20,34 @@ import java.util.List;
 public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
-    private SecretKey ACCESS_KEY;
-    private SecretKey REFRESH_KEY;
+    private SecretKey accessKey;
+    private SecretKey refreshKey;
 
     @PostConstruct
     public void init() {
-        ACCESS_KEY = Keys.hmacShaKeyFor(
+        accessKey = Keys.hmacShaKeyFor(
                 Base64.getDecoder().decode(jwtProperties.accessTokenSecret()));
-        REFRESH_KEY = Keys.hmacShaKeyFor(
+        refreshKey = Keys.hmacShaKeyFor(
                 Base64.getDecoder().decode(jwtProperties.refreshTokenSecret()));
     }
 
     public String createAccessToken(String sub, List<String> roles) {
-        return createToken(sub, roles, TokenType.ACCESS, jwtProperties.accessTokenExpiration(), ACCESS_KEY);
+        return createToken(sub, roles, TokenType.ACCESS, jwtProperties.accessTokenExpiration());
     }
 
     public String createRefreshToken(String sub, List<String> roles) {
-        return createToken(sub, roles, TokenType.REFRESH, jwtProperties.refreshTokenExpiration(), REFRESH_KEY);
+        return createToken(sub, roles, TokenType.REFRESH, jwtProperties.refreshTokenExpiration());
     }
 
-    private String createToken(String sub, List<String> roles, TokenType type, long validity, SecretKey key) {
+    private String createToken(String sub, List<String> roles, TokenType type, long validity) {
         Date now = new Date();
         return Jwts.builder()
                 .subject(sub)
-                .claim("roles", roles)
-                .claim("type", type.name())
+                .claim(JwtClaims.ROLES, roles)
+                .claim(JwtClaims.TYPE, type.name())
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + validity))
-                .signWith(key)
+                .signWith(getKey(type))
                 .compact();
     }
 
@@ -60,19 +60,23 @@ public class JwtTokenProvider {
                 .getPayload();
 
         String sub = claims.getSubject();
-        List<String> roles = claims.get("roles", List.class);
-        TokenType type = TokenType.valueOf(claims.get("type", String.class));
+        List<?> rawRoles = claims.get(JwtClaims.ROLES, List.class);
+        List<String> roles = rawRoles == null ? List.of() :
+                rawRoles.stream().map(String::valueOf).toList();
+        TokenType type = TokenType.valueOf(claims.get(JwtClaims.TYPE, String.class));
         return new JwtClaims(sub, roles, type);
     }
 
     // 토큰 유효성 검증
-    public boolean validateToken(String token, TokenType type) {
+    public boolean validateToken(String token, TokenType tokenType) {
         try {
-            Jwts.parser()
-                    .verifyWith(getKey(type))
+            Claims claims = Jwts.parser()
+                    .verifyWith(getKey(tokenType))
                     .build()
-                    .parseSignedClaims(token);
-            return true;
+                    .parseSignedClaims(token)
+                    .getPayload();
+            TokenType type = TokenType.valueOf(claims.get(JwtClaims.TYPE, String.class));
+            return type == tokenType;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -80,8 +84,8 @@ public class JwtTokenProvider {
 
     private SecretKey getKey(TokenType type) {
         return switch (type) {
-            case ACCESS -> ACCESS_KEY;
-            case REFRESH -> REFRESH_KEY;
+            case ACCESS -> accessKey;
+            case REFRESH -> refreshKey;
         };
     }
 }

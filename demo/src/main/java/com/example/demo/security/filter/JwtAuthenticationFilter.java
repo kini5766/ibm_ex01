@@ -52,11 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = jwtTokenResolver.resolveBearerToken(request);
 
-            if (StringUtils.hasText(token)) {
-                JwtClaims claims = jwtTokenProvider.parseClaimsAccess(token);
-                if (claims.type() == TokenType.ACCESS) {
-                    setAuthentication(claims, request);
-                }
+            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token, TokenType.ACCESS)) {
+                JwtClaims claims = jwtTokenProvider.parseClaims(token, TokenType.ACCESS);
+                setAuthentication(claims, request);
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();

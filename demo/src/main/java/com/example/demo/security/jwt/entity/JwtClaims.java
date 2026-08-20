@@ -7,4 +7,6 @@ public record JwtClaims(
         List<String> roles,
         TokenType type
 ) {
+    public static final String ROLES = "roles";
+    public static final String TYPE = "type";
 }
