@@ -1,21 +1,15 @@
 package com.example.demo.security.jwt.repository;
 
-import com.example.demo.security.jwt.entity.RefreshEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+@Component
+@RequiredArgsConstructor
+public class RefreshTokenRepository {
+    private static final String TOKEN_KET = "refresh:token:";
+    private static final String USER_KET = "refresh:token:";
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshEntity, Long> {
+    private final StringRedisTemplate redis;
 
-    Optional<RefreshEntity> findByRefreshHashAndRevokedFalse(String token);
-
-    @Modifying
-    @Query("DELETE FROM RefreshEntity r WHERE r.username = :username AND r.revoked = false")
-    void deleteByUsernameAndRevokedFalse(@Param("username") String username);
-
-    void deleteByCreatedDateBefore(LocalDateTime createdDate);
 }

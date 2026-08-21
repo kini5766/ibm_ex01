@@ -1,9 +1,24 @@
+server:
+  port: 8081
 spring:
   application:
     name: demo
-
-server:
-  port: 8081
+  data:
+    redis:
+      host: localhost
+      port: 6379
+#      password: TODO
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/
+    username:
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    show-sql: true
 app:
   frontend:
     url: http://localhost:5173

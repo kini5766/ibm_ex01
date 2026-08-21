@@ -4,11 +4,11 @@ import com.example.demo.domain.user.entity.UserRoleType;
 import com.example.demo.security.jwt.dto.JWTResponseDTO;
 import com.example.demo.security.jwt.service.JwtService;
 import com.example.demo.security.jwt.util.JwtProperties;
+import com.example.demo.security.oauth.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -33,7 +33,7 @@ public class SocialSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String username = authentication.getName();
-        List<String> roles = List.of("ROLE_" + UserRoleType.USER.name());
+        List<String> roles = List.of(CustomOAuth2User.toName(UserRoleType.USER));
 
         JWTResponseDTO tokens = jwtService.issueTokens(username, roles);
 
