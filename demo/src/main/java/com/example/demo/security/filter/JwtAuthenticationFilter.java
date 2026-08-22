@@ -1,10 +1,10 @@
 package com.example.demo.security.filter;
 
 import com.example.demo.api.auth.JwtController;
-import com.example.demo.security.jwt.entity.JwtClaims;
-import com.example.demo.security.jwt.entity.TokenType;
-import com.example.demo.security.jwt.util.JwtTokenProvider;
-import com.example.demo.security.jwt.util.JwtTokenResolver;
+import com.example.demo.security.auth.entity.JwtClaims;
+import com.example.demo.security.auth.entity.TokenType;
+import com.example.demo.security.jwt.JwtTokenProvider;
+import com.example.demo.security.jwt.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             JwtController.EXCHANGE_URL,
             JwtController.REFRESH_URL,
             JwtController.LOGOUT_URL
-            // TODO : 새로 api 추가할 때 마다 검토
     );
 
     @Override
@@ -64,9 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * SecurityContext에 Authentication 설정
-     */
     private void setAuthentication(JwtClaims claims, HttpServletRequest request) {
         List<SimpleGrantedAuthority> authorities = claims.roles().stream()
                 .map(SimpleGrantedAuthority::new)

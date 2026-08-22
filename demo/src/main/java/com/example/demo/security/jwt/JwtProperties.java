@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt.util;
+package com.example.demo.security.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

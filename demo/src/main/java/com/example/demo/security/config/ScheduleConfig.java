@@ -1,6 +1,6 @@
 package com.example.demo.security.config;
 
-import com.example.demo.security.jwt.repository.RefreshTokenRepository;
+import com.example.demo.security.auth.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;

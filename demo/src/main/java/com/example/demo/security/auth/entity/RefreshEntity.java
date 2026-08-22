@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt.entity;
+package com.example.demo.security.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,22 +43,8 @@ public class RefreshEntity {
     @Column(nullable = false)
     private boolean revoked;
 
-    public static String hash(String rawToken) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(hashBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 not available", e);
-        }
-    }
-
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(this.expiryDate);
-    }
-
-    public boolean isValid() {
-        return !revoked && !isExpired();
     }
 
     public void revoke() {

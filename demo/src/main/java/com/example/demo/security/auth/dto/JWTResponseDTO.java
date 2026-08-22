@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt.dto;
+package com.example.demo.security.auth.dto;
 
 public record JWTResponseDTO(
         String accessToken,

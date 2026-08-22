@@ -1,9 +1,9 @@
 package com.example.demo.security.handler;
 
 import com.example.demo.domain.user.entity.UserRoleType;
-import com.example.demo.security.jwt.dto.JWTResponseDTO;
-import com.example.demo.security.jwt.service.JwtService;
-import com.example.demo.security.jwt.util.JwtProperties;
+import com.example.demo.security.auth.dto.JWTResponseDTO;
+import com.example.demo.security.auth.service.JwtService;
+import com.example.demo.security.jwt.JwtProperties;
 import com.example.demo.security.oauth.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

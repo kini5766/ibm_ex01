@@ -1,7 +1,7 @@
-package com.example.demo.security.jwt.util;
+package com.example.demo.security.jwt;
 
-import com.example.demo.security.jwt.entity.JwtClaims;
-import com.example.demo.security.jwt.entity.TokenType;
+import com.example.demo.security.auth.entity.JwtClaims;
+import com.example.demo.security.auth.entity.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt.entity;
+package com.example.demo.security.auth.entity;
 
 import java.util.List;
 

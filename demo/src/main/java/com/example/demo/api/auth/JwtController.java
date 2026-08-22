@@ -1,9 +1,9 @@
 package com.example.demo.api.auth;
 
 import com.example.demo.security.handler.SocialSuccessHandler;
-import com.example.demo.security.jwt.dto.JWTResponseDTO;
-import com.example.demo.security.jwt.dto.RefreshRequestDTO;
-import com.example.demo.security.jwt.service.JwtService;
+import com.example.demo.security.auth.dto.JWTResponseDTO;
+import com.example.demo.security.auth.dto.RefreshRequestDTO;
+import com.example.demo.security.auth.service.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class JwtController {
 
+    private static final boolean APP_COOKIE_SECURE = false;
+    private static final String APP_COOKIE_SAME_SITE = "Lax";
     public static final String EXCHANGE_URL = "/jwt/exchange";
     public static final String REFRESH_URL = "/api/auth/refresh";
     public static final String LOGOUT_URL = "/api/auth/logout";
@@ -37,10 +39,7 @@ public class JwtController {
         clearCookie(response, SocialSuccessHandler.COOKIE_NAME_ACCESS_TOKEN);
         clearCookie(response, SocialSuccessHandler.COOKIE_NAME_REFRESH_TOKEN);
 
-        JWTResponseDTO body = JWTResponseDTO.of(
-                accessToken,
-                refreshToken
-        );
+        JWTResponseDTO body = JWTResponseDTO.of(accessToken, refreshToken);
 
         return ResponseEntity.ok().body(body);
     }
@@ -60,9 +59,10 @@ public class JwtController {
     private void clearCookie(HttpServletResponse response, String name) {
         ResponseCookie cookie = ResponseCookie.from(name, "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(APP_COOKIE_SECURE)
                 .path("/")
                 .maxAge(0)
+                .sameSite(APP_COOKIE_SAME_SITE)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
