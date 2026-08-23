@@ -24,10 +24,10 @@ app:
     url: http://localhost:5173
   cookie:
     secure: false # localhost 면 false
+    same-site: Lax
     access-token-name: access_token
     refresh-token-name: refresh_token
-jwt:
+auth:
   access-token-secret: qkxSN1Y9eZUJN7FrqGrZ1antggnBvfXplgh9T5qOzs29V8DlfCm/pcZKmlsooChcEvSqidmIUmGKy8xjlKUBqg
-  access-token-expiration: 1800000      # 30분
-  refresh-token-secret: YtZcib3KOd1LqisHRARzmNVwmA+XMuRDJtAstlzXRC98xMHS4Fo0KJpfvpDRkIGHOKHg10374+fxKR/zEKt5sA
-  refresh-token-expiration: 604800000   # 7일
+  access-token-expiration: 1800000ms      # 30분
+  refresh-token-expiration: 604800000ms   # 7일

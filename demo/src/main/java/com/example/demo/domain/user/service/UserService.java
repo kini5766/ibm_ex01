@@ -10,7 +10,7 @@ import java.nio.file.AccessDeniedException;
 public interface UserService {
     UserEntity updateOrCreateSocialUser(SocialProviderType registration, String username, String email, String nickname);
 
-    UserEntity existsUser(String username);
+    Boolean existsUser(String username);
 
     Long addUser(UserRequestDTO dto);
 

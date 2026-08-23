@@ -1,9 +1,11 @@
-package com.example.demo.security.oauth;
+package com.example.demo.security.service;
 
 import com.example.demo.domain.user.entity.SocialProviderType;
 import com.example.demo.domain.user.entity.UserEntity;
 import com.example.demo.domain.user.service.UserService;
+import com.example.demo.security.entity.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -19,7 +21,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserService userService;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(@NonNull OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         SocialProviderType registration;

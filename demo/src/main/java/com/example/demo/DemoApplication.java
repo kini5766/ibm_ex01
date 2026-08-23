@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 // https://github.com/parsin/JWT-Authentication-with-Refresh-Token-Rotation-and-Redis-Storage/
 // https://thachtaro2210.github.io/posts/springboot-jwt-refresh-rotation/
 @SpringBootApplication
-@EnableScheduling
 @ConfigurationPropertiesScan
 public class DemoApplication {
 

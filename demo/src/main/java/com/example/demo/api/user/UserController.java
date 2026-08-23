@@ -27,7 +27,7 @@ public class UserController {
     // 아이디 중복 확인
     // http://localhost:8081/api/user/exist
     @GetMapping(value = EXIST_URL + "/{username}")
-    public ResponseEntity<UserEntity> existUserApi(@PathVariable String username) {
+    public ResponseEntity<Boolean> existUserApi(@PathVariable String username) {
         return ResponseEntity.ok(userService.existsUser(username));
     }
 

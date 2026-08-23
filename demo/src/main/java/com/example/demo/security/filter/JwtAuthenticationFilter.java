@@ -1,18 +1,19 @@
 package com.example.demo.security.filter;
 
 import com.example.demo.api.auth.JwtController;
-import com.example.demo.security.auth.entity.JwtClaims;
-import com.example.demo.security.auth.entity.TokenType;
-import com.example.demo.security.jwt.JwtTokenProvider;
-import com.example.demo.security.jwt.JwtTokenResolver;
+import com.example.demo.security.service.CustomUserDetailsService;
+import com.example.demo.security.dao.JwtTokenProvider;
+import com.example.demo.security.dao.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -28,8 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenResolver jwtTokenResolver;
+    private final CustomUserDetailsService userDetailsService;
 
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+    private final UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
 
     // 이 경로들은 JWT 검사를 아예 하지 않음
     private static final List<String> EXCLUDE_PATHS = List.of(
@@ -47,13 +50,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
+    ) throws ServletException, IOException {
         try {
             String token = jwtTokenResolver.resolveBearerToken(request);
 
-            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token, TokenType.ACCESS)) {
-                JwtClaims claims = jwtTokenProvider.parseClaims(token, TokenType.ACCESS);
-                setAuthentication(claims, request);
+            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+                String sub = jwtTokenProvider.parseClaimSub(token);
+                Long id = Long.parseLong(sub);
+                UserDetails userDetails = userDetailsService.loadUserById(id);
+
+                userDetailsChecker.check(userDetails);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
@@ -61,22 +74,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private void setAuthentication(JwtClaims claims, HttpServletRequest request) {
-        List<SimpleGrantedAuthority> authorities = claims.roles().stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        claims.sub(),
-                        null,
-                        authorities
-                );
-
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

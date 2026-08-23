@@ -1,6 +1,7 @@
 package com.example.demo.security.config;
 
 import com.example.demo.api.user.UserController;
+import com.example.demo.common.config.AppProperties;
 import com.example.demo.security.filter.JwtAuthenticationFilter;
 import com.example.demo.security.filter.LoginFilter;
 import com.example.demo.security.handler.JwtLogoutSuccessHandler;
@@ -8,7 +9,7 @@ import com.example.demo.security.handler.LoginFailureHandler;
 import com.example.demo.security.handler.LoginSuccessHandler;
 import com.example.demo.security.handler.RefreshTokenLogoutHandler;
 import com.example.demo.api.auth.JwtController;
-import com.example.demo.security.oauth.CustomOAuth2UserService;
+import com.example.demo.security.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ public class SecurityConfig {
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final AuthenticationSuccessHandler socialSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final AppProperties appProperties;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -53,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(appProperties.frontend().url()));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
