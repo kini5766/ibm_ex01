@@ -7,11 +7,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +28,16 @@ public class JwtTokenProvider {
         accessKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(authProperties.accessTokenSecret()));
     }
 
-
-    public String createToken(String sub) {
+    public String createToken(String sub, Collection<? extends GrantedAuthority> authorities) {
         Date now = new Date();
+
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
         return Jwts.builder()
                 .subject(sub)
+                .claim("roles", roles)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + authProperties.accessTokenExpiration().toMillis()))
                 .signWith(accessKey)

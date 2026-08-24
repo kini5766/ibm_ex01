@@ -24,13 +24,13 @@ public class TokenService {
     private final UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
 
     public AuthTokenResponseDTO issueTokens(String sub) {
-        validateUserStatus(sub);
+        UserDetails userDetails = findAndValidateUser(sub);
 
         String newRawRefresh = RefreshTokenDAO.generateOpaqueRefreshToken();
         String newHash = RefreshTokenDAO.hash(newRawRefresh);
         refreshTokenDAO.save(newHash, sub);
 
-        String newAccessToken = jwtTokenProvider.createToken(sub);
+        String newAccessToken = jwtTokenProvider.createToken(sub, userDetails.getAuthorities());
         return AuthTokenResponseDTO.of(newAccessToken, newRawRefresh);
     }
 
@@ -46,13 +46,13 @@ public class TokenService {
 
         String sub = optionalSub.get();
 
-        validateUserStatus(sub);
+        UserDetails userDetails = findAndValidateUser(sub);
 
         String newRawRefresh = RefreshTokenDAO.generateOpaqueRefreshToken();
         String newHash = RefreshTokenDAO.hash(newRawRefresh);
         refreshTokenDAO.save(newHash, sub);
 
-        String newAccessToken = jwtTokenProvider.createToken(sub);
+        String newAccessToken = jwtTokenProvider.createToken(sub, userDetails.getAuthorities());
         return AuthTokenResponseDTO.of(newAccessToken, newRawRefresh);
     }
 
@@ -61,7 +61,7 @@ public class TokenService {
         refreshTokenDAO.deleteTokenHash(tokenHash);
     }
 
-    private void validateUserStatus(String sub) {
+    private UserDetails findAndValidateUser(String sub) {
         long userId;
         try {
             userId = Long.parseLong(sub);
@@ -69,7 +69,7 @@ public class TokenService {
             throw new UsernameNotFoundException("잘못된 토큰입니다.");
         }
         UserDetails userDetails = userDetailsService.loadUserById(userId);
-        // 상태 이상 시 예외 발생
         userDetailsChecker.check(userDetails);
+        return userDetails;
     }
 }
