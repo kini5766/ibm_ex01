@@ -2,8 +2,8 @@ package com.example.demo.security.filter;
 
 import com.example.demo.api.auth.JwtController;
 import com.example.demo.security.service.CustomUserDetailsService;
-import com.example.demo.security.dao.JwtTokenProvider;
-import com.example.demo.security.dao.JwtTokenResolver;
+import com.example.demo.security.jwt.JwtTokenProvider;
+import com.example.demo.security.jwt.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = jwtTokenResolver.resolveBearerToken(request);
 
             if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-                String sub = jwtTokenProvider.parseClaimSub(token);
+                String sub = jwtTokenProvider.getSubject(token);
                 Long id = Long.parseLong(sub);
                 UserDetails userDetails = userDetailsService.loadUserById(id);
 

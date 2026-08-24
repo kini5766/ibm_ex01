@@ -1,4 +1,4 @@
-package com.example.demo.security.dao;
+package com.example.demo.security.jwt;
 
 import com.example.demo.security.config.AuthProperties;
 import io.jsonwebtoken.Claims;
@@ -8,11 +8,13 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -44,27 +46,42 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 토큰에서 Claims 추출
-    public String parseClaimSub(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(accessKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return claims.getSubject();
+    public String getSubject(String token) {
+        return parseClaims(token).getSubject();
     }
 
-    // 토큰 유효성 검증
+    public List<String> getRoles(String token) {
+        Claims claims = parseClaims(token);
+        Object roles = claims.get("roles");
+
+        if (roles instanceof List<?> list) {
+            return list.stream()
+                    .map(String::valueOf)
+                    .toList();
+        }
+        return Collections.emptyList();
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities(String token) {
+        return getRoles(token).stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith(accessKey)
-                    .build()
-                    .parseSignedClaims(token);
+            parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(accessKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

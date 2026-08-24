@@ -46,12 +46,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         UsernamePasswordAuthenticationToken authRequest =
                 new UsernamePasswordAuthenticationToken(username, password);
 
-        setDetails(request, authRequest);
+        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 
         return this.getAuthenticationManager().authenticate(authRequest);
-    }
-
-    protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
-        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 }

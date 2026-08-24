@@ -1,7 +1,7 @@
 package com.example.demo.security.handler;
 
 import com.example.demo.security.service.TokenService;
-import com.example.demo.security.dao.JwtTokenResolver;
+import com.example.demo.security.jwt.JwtTokenResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

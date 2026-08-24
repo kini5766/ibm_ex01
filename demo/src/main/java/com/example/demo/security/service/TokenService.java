@@ -2,8 +2,8 @@ package com.example.demo.security.service;
 
 import com.example.demo.security.dto.RefreshRequestDTO;
 import com.example.demo.security.dto.AuthTokenResponseDTO;
-import com.example.demo.security.dao.JwtTokenProvider;
 import com.example.demo.security.dao.RefreshTokenDAO;
+import com.example.demo.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetails;
