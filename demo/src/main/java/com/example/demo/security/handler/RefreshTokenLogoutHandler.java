@@ -1,7 +1,5 @@
 package com.example.demo.security.handler;
 
-import com.example.demo.security.service.TokenService;
-import com.example.demo.security.jwt.JwtTokenResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RefreshTokenLogoutHandler implements LogoutHandler {
 
-    private final TokenService tokenService;
-    private final JwtTokenResolver jwtTokenResolver;
-
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        // TODO
     }
 }
