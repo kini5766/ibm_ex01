@@ -42,6 +42,13 @@ public class RefreshTokenDAO {
                 .encodeToString(bytes);
     }
 
+    public String generateAndSave(String sub) {
+        String newRawRefresh = generateOpaqueRefreshToken();
+        String newHash = hash(newRawRefresh);
+        save(newHash, sub);
+        return newRawRefresh;
+    }
+
     /**
      * 로그인 / 토큰 회전 시 호출
      */

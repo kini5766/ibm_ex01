@@ -4,11 +4,9 @@ import com.example.demo.api.user.UserController;
 import com.example.demo.common.config.AppProperties;
 import com.example.demo.security.filter.JwtAuthenticationFilter;
 import com.example.demo.security.filter.LoginFilter;
-import com.example.demo.security.handler.JwtLogoutSuccessHandler;
 import com.example.demo.security.handler.LoginFailureHandler;
 import com.example.demo.security.handler.LoginSuccessHandler;
-import com.example.demo.security.handler.RefreshTokenLogoutHandler;
-import com.example.demo.api.auth.JwtController;
+import com.example.demo.api.auth.AuthController;
 import com.example.demo.security.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -36,9 +34,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final RefreshTokenLogoutHandler jwtLogoutHandler;
-    private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
+
     private final AuthenticationSuccessHandler socialSuccessHandler;
+
     private final CustomOAuth2UserService customOAuth2UserService;
     private final AppProperties appProperties;
 
@@ -88,9 +86,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 LoginFilter.LOGIN_FILTER_URL,
-                                JwtController.EXCHANGE_URL,
-                                JwtController.REFRESH_URL,
-                                JwtController.LOGOUT_URL).permitAll()
+                                AuthController.EXCHANGE_URL,
+                                AuthController.REFRESH_URL,
+                                AuthController.LOGOUT_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, UserController.USER_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, UserController.EXIST_URL + "/**").permitAll()
                         .anyRequest()
@@ -105,12 +103,6 @@ public class SecurityConfig {
                             exception.printStackTrace();
                         }))
                 )
-                .logout(logout -> logout
-                        .logoutUrl(JwtController.LOGOUT_URL)
-                        .addLogoutHandler(jwtLogoutHandler)
-                        .logoutSuccessHandler(jwtLogoutSuccessHandler)
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 

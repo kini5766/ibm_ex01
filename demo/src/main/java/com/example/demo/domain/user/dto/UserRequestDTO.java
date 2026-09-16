@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.dto;
 
+import com.example.demo.domain.user.entity.UserEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -32,4 +33,12 @@ public class UserRequestDTO {
 
     @NotBlank(groups = {addGroup.class, updateGroup.class})
     private String nickname;
+
+    public UserEntity toEntity(String encodedPassword) {
+        return UserEntity.builder()
+                .nickname(this.nickname)
+                .email(this.email)
+                .password(encodedPassword)
+                .build();
+    }
 }

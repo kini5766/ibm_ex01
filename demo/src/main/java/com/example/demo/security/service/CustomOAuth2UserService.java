@@ -1,8 +1,13 @@
 package com.example.demo.security.service;
 
+import com.example.demo.domain.user.entity.Role;
 import com.example.demo.domain.user.entity.SocialProviderType;
 import com.example.demo.domain.user.entity.UserEntity;
+import com.example.demo.domain.user.entity.UserSocialAccountEntity;
+import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserSocialAccountRepository;
 import com.example.demo.domain.user.service.UserService;
+import com.example.demo.security.dto.SocialTypeResponseDTO;
 import com.example.demo.security.entity.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -12,13 +17,17 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserService userService;
+    private final UserSocialAccountRepository socialAccountRepository;
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(@NonNull OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -26,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         SocialProviderType registration;
         Map<String, Object> attributes;
-        String username;
+        String providerId;
         String email;
         String nickname;
 
@@ -34,20 +43,40 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (SocialProviderType.NAVER.name().equals(registrationId)) {
             registration = SocialProviderType.NAVER;
             attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
-            username = registrationId + "_" + attributes.get("id");
+            providerId = attributes.get("id").toString();
             email = attributes.get("email").toString();
             nickname = attributes.get("nickname").toString();
         } else if (SocialProviderType.GOOGLE.name().equals(registrationId)) {
             registration = SocialProviderType.GOOGLE;
             attributes = oAuth2User.getAttributes();
-            username = registrationId + "_" + attributes.get("sub");
+            providerId = attributes.get("sub").toString();
             email = attributes.get("email").toString();
             nickname = attributes.get("name").toString();
         } else {
             throw new OAuth2AuthenticationException("지원하지 않은 소셜 로그인입니다.");
         }
 
-        UserEntity entity = userService.updateOrCreateSocialUser(registration, username, email, nickname);
-        return new CustomOAuth2User(entity, attributes);
+        UserEntity user = findOrCreateMember(email, nickname);
+        UserSocialAccountEntity socialAccount = new UserSocialAccountEntity(registrationId + "_" + providerId, registration, providerId, email, user);
+        socialAccountRepository.save(socialAccount);
+        return new CustomOAuth2User(attributes, user, socialAccount);
+    }
+
+    private UserEntity findOrCreateMember(String email, String nickname) {
+        Optional<UserEntity> optionalMember = userRepository.findByEmail(email);
+        if (optionalMember.isPresent()) {
+            // 기존 유저
+            return optionalMember.get();
+        } else {
+            // 신규 유저 추가
+            UserEntity newMember = UserEntity
+                    .builder()
+                    .email(email)
+                    .password(null)
+                    .nickname(nickname)
+                    .roles(Set.of(Role.USER))
+                    .build();
+            return userRepository.save(newMember);
+        }
     }
 }

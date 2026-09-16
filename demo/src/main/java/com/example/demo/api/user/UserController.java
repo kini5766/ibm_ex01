@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,8 @@ public class UserController {
     // http://localhost:8081/api/user
     @GetMapping(value = USER_URL)
     public ResponseEntity<UserResponseDTO> userMeApi() {
-        return ResponseEntity.ok(userService.readUser());
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(userService.readUser(Long.parseLong(id)));
     }
 
     // 회원 수정

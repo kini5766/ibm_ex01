@@ -1,4 +1,4 @@
 package com.example.demo.domain.user.dto;
 
-public record UserResponseDTO(String username, Boolean social, String nickname, String email) {
+public record UserResponseDTO(String email, String nickname) {
 }

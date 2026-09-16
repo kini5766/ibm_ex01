@@ -1,6 +1,6 @@
 package com.example.demo.security.filter;
 
-import com.example.demo.api.auth.JwtController;
+import com.example.demo.api.auth.AuthController;
 import com.example.demo.security.service.CustomUserDetailsService;
 import com.example.demo.security.jwt.JwtTokenProvider;
 import com.example.demo.security.jwt.JwtTokenResolver;
@@ -36,10 +36,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // 이 경로들은 JWT 검사를 아예 하지 않음
     private static final List<String> EXCLUDE_PATHS = List.of(
-            LoginFilter.LOGIN_FILTER_URL,
-            JwtController.EXCHANGE_URL,
-            JwtController.REFRESH_URL,
-            JwtController.LOGOUT_URL
+            AuthController.LOGIN_URL,
+            AuthController.EXCHANGE_URL,
+            AuthController.REFRESH_URL,
+            AuthController.LOGOUT_URL
     );
 
     @Override

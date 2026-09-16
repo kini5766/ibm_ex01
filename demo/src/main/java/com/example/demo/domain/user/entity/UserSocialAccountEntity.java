@@ -16,12 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserSocialAccountEntity extends BaseTimeEntity {
     @Id
-    @GeneratedValue
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -31,4 +26,8 @@ public class UserSocialAccountEntity extends BaseTimeEntity {
     private String providerId;
 
     private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 }

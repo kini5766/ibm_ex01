@@ -1,10 +1,9 @@
 package com.example.demo.security.entity;
 
 import com.example.demo.domain.user.entity.UserEntity;
-import com.example.demo.domain.user.entity.Role;
+import com.example.demo.domain.user.entity.UserSocialAccountEntity;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
@@ -16,16 +15,15 @@ public class CustomOAuth2User implements OAuth2User {
 
     private final Map<String, Object> attributes;
     private final List<GrantedAuthority> authorities;
-    private final String email;
+    private final String sub;
 
-    public CustomOAuth2User(UserEntity entity, Map<String, Object> attributes) {
+    public CustomOAuth2User(Map<String, Object> attributes, UserEntity user, UserSocialAccountEntity socialAccount) {
         this.attributes = Map.copyOf(attributes);
-        this.authorities = entity.getRoles().stream()
-                .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(Role.toAuthorityName(role)))
-                .toList();
-        this.email = entity.getEmail();
+        this.authorities = CustomUserDetails.toAuthorities(user.getRoles());
+        this.sub = String.valueOf(user.getId());
     }
 
+    // jwt 토큰 sub
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
@@ -38,6 +36,6 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return email;
+        return sub;
     }
 }
